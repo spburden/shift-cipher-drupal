@@ -13,9 +13,19 @@ function shift_cipher_menu() {
 
 function shift_cipher_form() {
     $form['shift_value'] = array(
-        '#title' => 'Shift Number',
+        '#title' => 'Shift Value',
         '#type' => 'textfield',
         '#description' => t('Enter a number'),
+    );
+    $form['shift_direction'] = array(
+        '#title' => 'Shift Direction',
+        '#type' => 'textfield',
+        '#description' => t('Enter a direction (left or right)'),
+    );
+    $form['phrase'] = array(
+        '#title' => 'Phrase',
+        '#type' => 'textfield',
+        '#description' => t('Enter a the phrase to encrypt)'),
     );
     $form['submit'] = array(
         '#type' => 'submit',
