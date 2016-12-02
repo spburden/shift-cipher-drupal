@@ -43,12 +43,14 @@ function shift_cipher_form() {
 function shift_cipher_form_submit($form, &$form_state) {
     $shift_value = $form_state['values']['shift_value'];
     $shift_direction = $form_state['values']['shift_direction'];
-    $phrase = $form_state['values']['phrase'];
-
-    $_SESSION['decrypted_message'] = "Hello World";
+    $phrase = strtolower($form_state['values']['phrase']);
+    $alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
+    $_SESSION['decrypted_message'] = count($alphabet);
     $form_state['redirect'] = 'cipher_results_page';
 }
 
 function cipher_results() {
-    return "Success";
+    $message = $_SESSION['decrypted_message'];
+    $result = "<p>$message</p>";
+    return $result;
 }
