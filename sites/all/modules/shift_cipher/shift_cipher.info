@@ -1,0 +1,5 @@
+name = Shift Cipher
+description = An encryption technique based on Caesar's cipher.
+package = Stephen Burden
+core = 7.x
+files[] = shift_cipher.module

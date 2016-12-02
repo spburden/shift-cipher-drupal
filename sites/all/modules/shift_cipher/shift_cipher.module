@@ -1,0 +1,25 @@
+<?php
+function shift_cipher_menu() {
+    $item = array();
+    $items['shift_cipher'] = array(
+        'title' => "Shift Cipher",
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('shift_cipher_form'),
+        'access callback' => TRUE,
+        'type' => MENU_NORMAL_ITEM,
+    );
+    return $items;
+}
+
+function shift_cipher_form() {
+    $form['shift_value'] = array(
+        '#title' => 'Shift Number',
+        '#type' => 'textfield',
+        '#description' => t('Enter a number'),
+    );
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => 'Encrypt',
+    );
+    return $form;
+}
