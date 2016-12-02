@@ -53,19 +53,20 @@ function shift_cipher_form_submit($form, &$form_state) {
     $phrase = strtolower($phrase);
     $letters = str_split($phrase);
     $alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
-    $encrypted_message;
+    //$z = 25;
+    $encrypted_message = "";
     foreach ($letters as $letter) {
         $alphabet_index =  array_search($letter, $alphabet);
-        if ($alphabet_index === -1) {
-            $new_letter = $letter;
-        } else {
+        if (in_array($letter, $alphabet)) {
             $new_index = $alphabet_index + ($shift_value * $direction);
-            if ($new_index > 26) {
+            if ($new_index > 25) {
                 $new_index = $new_index - 26;
             } elseif ($new_index < 0){
-                $new_index = $new_index + 27;
+                $new_index = $new_index + 26;
             }
             $new_letter = $alphabet[$new_index];
+        } else {
+            $new_letter = $letter;
         }
         $encrypted_message .= $new_letter;
     }
