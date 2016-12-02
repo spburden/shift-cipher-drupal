@@ -42,15 +42,39 @@ function shift_cipher_form() {
 
 function shift_cipher_form_submit($form, &$form_state) {
     $shift_value = $form_state['values']['shift_value'];
+    $shift_value = intval($shift_value);
     $shift_direction = $form_state['values']['shift_direction'];
-    $phrase = strtolower($form_state['values']['phrase']);
+    if ($shift_direction === "left") {
+        $direction = -1;
+    } else {
+        $direction = 1;
+    }
+    $phrase = $form_state['values']['phrase'];
+    $phrase = strtolower($phrase);
+    $letters = str_split($phrase);
     $alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
-    $_SESSION['decrypted_message'] = count($alphabet);
+    $encrypted_message;
+    foreach ($letters as $letter) {
+        $alphabet_index =  array_search($letter, $alphabet);
+        if ($alphabet_index === -1) {
+            $new_letter = $letter;
+        } else {
+            $new_index = $alphabet_index + ($shift_value * $direction);
+            if ($new_index > 26) {
+                $new_index = $new_index - 26;
+            } elseif ($new_index < 0){
+                $new_index = $new_index + 27;
+            }
+            $new_letter = $alphabet[$new_index];
+        }
+        $encrypted_message .= $new_letter;
+    }
+    $_SESSION['encrypted_message'] = $encrypted_message;
     $form_state['redirect'] = 'cipher_results_page';
 }
 
 function cipher_results() {
-    $message = $_SESSION['decrypted_message'];
-    $result = "<p>$message</p>";
+    $encrypted_message = $_SESSION['encrypted_message'];
+    $result = "<p>$encrypted_message</p>";
     return $result;
 }
