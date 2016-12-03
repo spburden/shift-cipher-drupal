@@ -22,11 +22,13 @@ function shift_cipher_form() {
         '#title' => 'Shift Value',
         '#type' => 'textfield',
         '#description' => t('Enter a number'),
+        '#element_validate' => array('element_validate_integer_positive'),
     );
     $form['shift_direction'] = array(
         '#title' => 'Shift Direction',
         '#type' => 'textfield',
         '#description' => t('Enter a direction (left or right)'),
+        '#element_validate' => array('element_validate_direction'),
     );
     $form['phrase'] = array(
         '#title' => 'Phrase',
@@ -53,11 +55,10 @@ function shift_cipher_form_submit($form, &$form_state) {
     $phrase = strtolower($phrase);
     $letters = str_split($phrase);
     $alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
-    //$z = 25;
     $encoded_phrase = "";
     foreach ($letters as $letter) {
-        $alphabet_index =  array_search($letter, $alphabet);
         if (in_array($letter, $alphabet)) {
+            $alphabet_index =  array_search($letter, $alphabet);
             $new_index = $alphabet_index + ($shift_value * $direction);
             while ($new_index > 25 || $new_index < 0) {
                 if ($new_index > 25) {
@@ -80,4 +81,11 @@ function cipher_results() {
     $encoded_phrase = $_SESSION['encoded_phrase'];
     $result = "<p>$encoded_phrase</p>";
     return $result;
+}
+
+function element_validate_direction($element) {
+    $element['#value'] = strtolower($element['#value']);
+    if ($element['#value'] !== 'left' || $element['#value'] !== 'right') {
+        form_error($element, t('The shift direction must be either "left" or "right".'));
+    }
 }
