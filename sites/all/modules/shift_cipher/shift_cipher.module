@@ -54,28 +54,30 @@ function shift_cipher_form_submit($form, &$form_state) {
     $letters = str_split($phrase);
     $alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
     //$z = 25;
-    $encrypted_message = "";
+    $encoded_phrase = "";
     foreach ($letters as $letter) {
         $alphabet_index =  array_search($letter, $alphabet);
         if (in_array($letter, $alphabet)) {
             $new_index = $alphabet_index + ($shift_value * $direction);
-            if ($new_index > 25) {
-                $new_index = $new_index - 26;
-            } elseif ($new_index < 0){
-                $new_index = $new_index + 26;
+            while ($new_index > 25 || $new_index < 0) {
+                if ($new_index > 25) {
+                    $new_index = $new_index - 26;
+                } elseif ($new_index < 0){
+                    $new_index = $new_index + 26;
+                }
             }
             $new_letter = $alphabet[$new_index];
         } else {
             $new_letter = $letter;
         }
-        $encrypted_message .= $new_letter;
+        $encoded_phrase .= $new_letter;
     }
-    $_SESSION['encrypted_message'] = $encrypted_message;
+    $_SESSION['encoded_phrase'] = $encoded_phrase;
     $form_state['redirect'] = 'cipher_results_page';
 }
 
 function cipher_results() {
-    $encrypted_message = $_SESSION['encrypted_message'];
-    $result = "<p>$encrypted_message</p>";
+    $encoded_phrase = $_SESSION['encoded_phrase'];
+    $result = "<p>$encoded_phrase</p>";
     return $result;
 }
