@@ -18,6 +18,11 @@ function shift_cipher_menu() {
 }
 
 function shift_cipher_form() {
+    $path = drupal_get_path('module', 'shift_cipher');
+    $form['cipher_image'] = array(
+        '#markup' => "<img src=" . $path . "/cipher.png height='200'>"
+    );
+
     $form['shift_value'] = array(
         '#title' => 'Shift Value',
         '#type' => 'textfield',
