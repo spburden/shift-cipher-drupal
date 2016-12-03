@@ -34,6 +34,7 @@ function shift_cipher_form() {
         '#title' => 'Phrase',
         '#type' => 'textfield',
         '#description' => t('Enter a the phrase to encrypt)'),
+        '#element_validate' => array('element_validate_punctuation'),
     );
     $form['submit'] = array(
         '#type' => 'submit',
@@ -84,8 +85,20 @@ function cipher_results() {
 }
 
 function element_validate_direction($element) {
-    $element['#value'] = strtolower($element['#value']);
-    if ($element['#value'] !== 'left' || $element['#value'] !== 'right') {
+    $form_direction = strtolower($element['#value']);
+    if ($form_direction != 'left' && $form_direction != 'right') {
         form_error($element, t('The shift direction must be either "left" or "right".'));
+    }
+}
+
+function element_validate_punctuation($element) {
+    $alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
+    $punctuation = array('.', ',', '!', "'", '"', '&', '-', '(', ')', ':', '?', '/', ';', ' ');
+    $letters = str_split(strtolower($element['#value']));
+    for ($i=0; $i < count($letters); $i++) {
+        if (!in_array($letters[$i], $alphabet) && !in_array($letters[$i], $punctuation)) {
+            $i = count($letters);
+            form_error($element, t('The only special characters that are allowed in your input phrase are spaces and punctuation.'));
+        }
     }
 }
