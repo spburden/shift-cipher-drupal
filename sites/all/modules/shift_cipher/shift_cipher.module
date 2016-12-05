@@ -38,7 +38,7 @@ function shift_cipher_form() {
     $form['phrase'] = array(
         '#title' => 'Phrase',
         '#type' => 'textfield',
-        '#description' => t('Enter a the phrase to encrypt)'),
+        '#description' => t('Enter a the phrase to encrypt'),
         '#element_validate' => array('element_validate_punctuation'),
     );
     $form['submit'] = array(
