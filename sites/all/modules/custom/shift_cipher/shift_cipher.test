@@ -20,7 +20,7 @@ class ShiftCipherTests extends DrupalWebTestCase
 
     public function testShiftCipherValid() {
         // We want to navigate to the cipher form, add some good values, submit it and make sure the output is displayed.
-
+        //
         // Navigate to /shift_cipher.
         $this->drupalGet('shift_cipher');
 
@@ -29,10 +29,10 @@ class ShiftCipherTests extends DrupalWebTestCase
 
         $form['shift_value'] = 1;
         $form['shift_direction'] = "left";
-        $form['phrase'] = "a    b";
+        $form['phrase'] = "a b";
 
         $this->drupalPost('shift_cipher', $form, t('Encrypt'));
-        $this->assertNoRaw('z    a', 'Output including spaces displayed!');
+        $this->assertText('z a', 'Output displayed!');
     }
 
     public function testShiftCipherInvalidValue() {
@@ -79,6 +79,4 @@ class ShiftCipherTests extends DrupalWebTestCase
         $this->drupalPost('shift_cipher', $form, t('Encrypt'));
         $this->assertText('The only special characters that are allowed in your input phrase are spaces and punctuation');
     }
-
-
 }
