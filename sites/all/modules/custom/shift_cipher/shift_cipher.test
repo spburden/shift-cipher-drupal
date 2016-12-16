@@ -29,10 +29,10 @@ class ShiftCipherTests extends DrupalWebTestCase
 
         $form['shift_value'] = 1;
         $form['shift_direction'] = "left";
-        $form['phrase'] = "a b";
+        $form['phrase'] = "a ";
 
         $this->drupalPost('shift_cipher', $form, t('Encrypt'));
-        $this->assertText('z a', 'Output displayed!');
+        $this->assertText('z', 'Output displayed!');
     }
 
     public function testShiftCipherInvalidValue() {
