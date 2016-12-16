@@ -1,0 +1,84 @@
+<?php
+/**
+ * @file
+ * Tests for ShiftCipher Module.
+ */
+class ShiftCipherTests extends DrupalWebTestCase
+{
+    public static function getInfo() {
+        return array(
+            'name' => 'Shift Cipher User Tests',
+            'description' => 'Tests for the Shift Cipher User module.',
+            'group' => 'Stephen Burden Tests',
+        );
+    }
+
+    public function setUp() {
+        // enable the module.
+        parent::setUp(array('shift_cipher'));
+    }
+
+    public function testShiftCipherValid() {
+        // We want to navigate to the cipher form, add some good values, submit it and make sure the output is displayed.
+
+        // Navigate to /shift_cipher.
+        $this->drupalGet('shift_cipher');
+
+        // Verify that the form exists.
+        $this->assertText("Shift Cipher", 'Form displayed!');
+
+        $form['shift_value'] = 1;
+        $form['shift_direction'] = "left";
+        $form['phrase'] = "a    b";
+
+        $this->drupalPost('shift_cipher', $form, t('Encrypt'));
+        $this->assertNoRaw('z    a', 'Output including spaces displayed!');
+    }
+
+    public function testShiftCipherInvalidValue() {
+        // Navigate to /shift_cipher.
+        $this->drupalGet('shift_cipher');
+
+        // Verify that the form exists.
+        $this->assertText("Shift Cipher", 'Form displayed!');
+
+        $form['shift_value'] = -1;
+        $form['shift_direction'] = "right";
+        $form['phrase'] = "a";
+
+        $this->drupalPost('shift_cipher', $form, t('Encrypt'));
+        $this->assertText('Shift Value must be a positive integer.', 'INVALID Shift Value!');
+    }
+
+    public function testShiftCipherInvalidDirection() {
+        // Navigate to /shift_cipher.
+        $this->drupalGet('shift_cipher');
+
+        // Verify that the form exists.
+        $this->assertText("Shift Cipher", 'Form displayed!');
+
+        $form['shift_value'] = 1;
+        $form['shift_direction'] = "rigt";
+        $form['phrase'] = "a";
+
+        $this->drupalPost('shift_cipher', $form, t('Encrypt'));
+        $this->assertText('The shift direction must be either "left" or "right".', 'INVALID Shift Direction!');
+    }
+
+    public function testShiftCipherInvalidPunctuation() {
+        // Navigate to /shift_cipher.
+        $this->drupalGet('shift_cipher');
+
+        // Verify that the form exists.
+        $this->assertText("Shift Cipher", 'Form displayed!');
+
+        $form['shift_value'] = 1;
+        $form['shift_direction'] = "right";
+        $form['phrase'] = "a@";
+
+        $this->drupalPost('shift_cipher', $form, t('Encrypt'));
+        $this->assertText('The only special characters that are allowed in your input phrase are spaces and punctuation');
+    }
+
+
+}
