@@ -3,12 +3,12 @@
  * @file
  * Tests for ShiftCipher Module.
  */
-class ShiftCipherTests extends DrupalWebTestCase
+class ShiftCipherFunctionalTests extends DrupalWebTestCase
 {
     public static function getInfo() {
         return array(
-            'name' => 'Shift Cipher User Tests',
-            'description' => 'Tests for the Shift Cipher User module.',
+            'name' => 'Shift Cipher Functional Tests',
+            'description' => 'Functional Tests for the Shift Cipher module.',
             'group' => 'Stephen Burden Tests',
         );
     }
@@ -29,10 +29,10 @@ class ShiftCipherTests extends DrupalWebTestCase
 
         $form['shift_value'] = 1;
         $form['shift_direction'] = "left";
-        $form['phrase'] = "a ";
+        $form['phrase'] = "a b";
 
         $this->drupalPost('shift_cipher', $form, t('Encrypt'));
-        $this->assertText('z', 'Output displayed!');
+        $this->assertText('z a', 'Output displayed!');
     }
 
     public function testShiftCipherInvalidValue() {
@@ -78,5 +78,44 @@ class ShiftCipherTests extends DrupalWebTestCase
 
         $this->drupalPost('shift_cipher', $form, t('Encrypt'));
         $this->assertText('The only special characters that are allowed in your input phrase are spaces and punctuation');
+    }
+}
+
+class ShiftCipherUnitTests extends DrupalUnitTestCase
+{
+    public static function getInfo()
+    {
+        return array(
+            'name' => 'Shift Cipher Unit Tests',
+            'description' => 'Unit Tests for the Shift Cipher module.',
+            'group' => 'Stephen Burden Tests',
+        );
+    }
+
+    function testEncrypt()
+    {
+       $description = 'Successfully encrypt 1 word';
+       $shift_value = '1';
+       $shift_direction = 'left';
+       $phrase = 'abc';
+       $output = encrypt($shift_value, $shift_direction, $phrase);
+       $expected_output = 'zab';
+       $this->assertEqual($output, $expected_output, $description);
+
+       $description = 'Successfully encrypt 2 words';
+       $shift_value = '1';
+       $shift_direction = 'right';
+       $phrase = 'abc def';
+       $output = encrypt($shift_value, $shift_direction, $phrase);
+       $expected_output = 'bcd efg';
+       $this->assertEqual($output, $expected_output, $description);
+
+       $description = 'Successfully encrypt 2 words with puntuation and across bounds of Alphabet';
+       $shift_value = '1';
+       $shift_direction = 'left';
+       $phrase = 'abc! def.';
+       $output = encrypt($shift_value, $shift_direction, $phrase);
+       $expected_output = 'zab! cde.';
+       $this->assertEqual($output, $expected_output, $description);
     }
 }

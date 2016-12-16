@@ -52,35 +52,9 @@ function shift_cipher_form_submit($form, &$form_state) {
     $shift_value = $form_state['values']['shift_value'];
     $shift_value = intval($shift_value);
     $shift_direction = $form_state['values']['shift_direction'];
-    if ($shift_direction === "left") {
-        $direction = -1;
-    } else {
-        $direction = 1;
-    }
     $phrase = $form_state['values']['phrase'];
     $phrase = strtolower($phrase);
-    $letters = str_split($phrase);
-    $alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
-    $encoded_phrase = "";
-    foreach ($letters as $letter) {
-        if (in_array($letter, $alphabet)) {
-            $alphabet_index =  array_search($letter, $alphabet);
-            $new_index = $alphabet_index + ($shift_value * $direction);
-            while ($new_index > 25 || $new_index < 0) {
-                if ($new_index > 25) {
-                    $new_index = $new_index % 26;
-                } elseif ($new_index < 0){
-                    $new_index = $new_index + 26;
-                }
-            }
-            $new_letter = $alphabet[$new_index];
-        } elseif ($letter === " ") {
-            $new_letter = '&nbsp';
-        } else {
-            $new_letter = $letter;
-        }
-        $encoded_phrase .= $new_letter;
-    }
+    $encoded_phrase = encrypt($shift_value, $shift_direction, $phrase);
     $_SESSION['encoded_phrase'] = $encoded_phrase;
     $form_state['redirect'] = 'cipher_results_page';
 }
@@ -108,4 +82,38 @@ function element_validate_punctuation($element) {
             form_error($element, t('The only special characters that are allowed in your input phrase are spaces and punctuation.'));
         }
     }
+}
+
+function encrypt($shift_value, $shift_direction, $phrase) {
+    if ($shift_direction === "left") {
+        $direction = -1;
+    } else {
+        $direction = 1;
+    }
+    $letters = str_split($phrase);
+    $alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
+    $encoded_phrase = "";
+    foreach ($letters as $letter) {
+        $letter_array = str_split($encoded_phrase);
+        $i = count($letter_array) - 1;
+        $last_letter = $letter_array[$i];
+        if (in_array($letter, $alphabet)) {
+            $alphabet_index =  array_search($letter, $alphabet);
+            $new_index = $alphabet_index + ($shift_value * $direction);
+            while ($new_index > 25 || $new_index < 0) {
+                if ($new_index > 25) {
+                    $new_index = $new_index % 26;
+                } elseif ($new_index < 0){
+                    $new_index = $new_index + 26;
+                }
+            }
+            $new_letter = $alphabet[$new_index];
+        } elseif ($last_letter === " " && $letter === " ") {
+            $new_letter = '&nbsp';
+        } else {
+            $new_letter = $letter;
+        }
+        $encoded_phrase .= $new_letter;
+    }
+    return $encoded_phrase;
 }
